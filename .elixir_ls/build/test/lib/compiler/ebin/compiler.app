@@ -1,6 +1,6 @@
-{application,compilador_c,
+{application,compiler,
              [{applications,[kernel,stdlib,elixir,logger]},
-              {description,"compilador_c"},
+              {description,"compiler"},
               {modules,['Elixir.AST','Elixir.CodeGenerator','Elixir.Compiler',
                         'Elixir.Lexer','Elixir.Linker','Elixir.Parser',
                         'Elixir.Sanitizer']},
