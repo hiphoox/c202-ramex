@@ -37,7 +37,7 @@ defmodule CodeGenerator do
 
   def emit_code(:return, code_snippet, _) do
     """
-        movl    #{code_snippet}, %eax
+        movl    #{code_snippet}, %rax
         ret
     """
   end
