@@ -12,11 +12,11 @@ defmodule Lexer do
   end
 
 
-  @spec get_constant(binary) :: {:error | {:constant, any}, binary}
-  def get_constant(program) do
+  @spec get_constant(binary, any) :: {:error | {:constant, any}, any, binary}
+  def get_constant(program, line) do
     case Regex.run(~r/^\d+/, program) do
       [value] ->
-        {{:constant, String.to_integer(value)}, String.trim_leading(program, value)}
+        {{:constant, String.to_integer(value)}, line, String.trim_leading(program, value)}
 
       program ->
         {:error, "Token not valid: #{program}"}
@@ -38,39 +38,41 @@ defmodule Lexer do
   def lex_raw_tokens(program,line) when program != "" do
       #IO.puts(program)
 
-    {token, rest} =
+    {token, lin, rest} =
       case program do
         "{" <> rest ->
-          {:open_brace, rest}
+          {:open_brace, line, rest}
 
         "}" <> rest ->
-          {:close_brace, rest}
+          {:close_brace, line, rest}
 
         "(" <> rest ->
-          {:open_paren, rest}
+          {:open_paren, line, rest}
 
         ")" <> rest ->
-          {:close_paren, rest}
+          {:close_paren, line, rest}
 
         ";" <> rest ->
-          {:semicolon, rest}
+          {:semicolon, line, rest}
 
         "return" <> rest ->
-          {:return_keyword, rest}
+          {:return_keyword, line, rest}
 
         "int" <> rest ->
-          {:int_keyword, rest}
+          {:int_keyword, line, rest}
 
         "main" <> rest ->
-          {:main_keyword, rest}
+          {:main_keyword, line, rest}
 
         rest ->
-          get_constant(rest)
+          get_constant(rest, line)
       end
 
     if token != :error do
       remaining_tokens = lex_raw_tokens(rest,line)
-      [token | remaining_tokens]
+      [{token, lin} | remaining_tokens]
+      #[token | [lin | [remaining_tokens | []]]]
+      #[token | remaining_tokens]
     else
       [:error]
     end
