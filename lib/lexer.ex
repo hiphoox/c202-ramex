@@ -2,29 +2,37 @@ defmodule Lexer do
   def scan_words(words) do
       text=Enum.map(words, fn {string, _} -> string end)
       line=Enum.map(words, fn {_, number} -> number end)
-      #textString=Enum.join(text, " ")
-      #IO.inspect(text)
-      #IO.inspect(line)
-      #trimmed_content = String.trim(textString)
-      #IO.inspect(trimmed_content)
-      #sal=Regex.split(~r/\s+/, trimmed_content)
-      #IO.inspect(sal)
+
+
       text
       |> Enum.zip(line)
       |> Enum.flat_map(&lex_raw_tokens(elem(&1, 0), elem(&1, 1)))
+      |> check_error()
       #Enum.flat_map(sal, &lex_raw_tokens(&1, line))
 
   end
 
+  def check_error(listLex) do
+    if Enum.find_value(listLex, false, fn(x)->x==:error end)==true do
+      {:error}
+
+  else
+    listLex
+  end
+  end
 
   @spec get_constant(binary, any) :: {:error | {:constant, any}, any, binary}
   def get_constant(program, line) do
+    #IO.inspect(program)
+    invalid=program
     case Regex.run(~r/^\d+/, program) do
       [value] ->
         {{:constant, String.to_integer(value)}, line, String.trim_leading(program, value)}
 
       program ->
-        {:error, "Token not valid: #{program}"}
+        #{:error, line, "Token not valid: #{program}"}
+        IO.inspect({:error, invalid, "token not valid at line: " <> to_string(line)})
+        {:error, line, "Token not valid: #{program}"}
     end
   end
 
@@ -40,7 +48,7 @@ defmodule Lexer do
           | :semicolon
           | {:constant, any}
         ]
-  def lex_raw_tokens(program,line) when program != "" do
+  def lex_raw_tokens(program,line) when program != "" and not is_tuple(program) do
       #IO.puts(program)
       #IO.inspect(line)
       trimmed_content = String.trim(program)
@@ -77,13 +85,19 @@ defmodule Lexer do
         rest ->
           get_constant(rest, line)
       end
-
+      #IO.inspect(token)
     if token != :error do
+      #IO.inspect(rest, label: "resto: ")
+
       remaining_tokens = lex_raw_tokens(rest,line)
+
+      #IO.inspect(remaining_tokens, label: "remaining tokens: ")
       [{token, lin} | remaining_tokens]
+
       #[token | [lin | [remaining_tokens | []]]]
       #[token | remaining_tokens]
     else
+      #[program]
       [:error]
     end
   end
