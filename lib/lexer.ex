@@ -2,12 +2,17 @@ defmodule Lexer do
   def scan_words(words) do
       text=Enum.map(words, fn {string, _} -> string end)
       line=Enum.map(words, fn {_, number} -> number end)
-      textString=Enum.join(text, " ")
+      #textString=Enum.join(text, " ")
       #IO.inspect(text)
-      trimmed_content = String.trim(textString)
-      sal=Regex.split(~r/\s+/, trimmed_content)
+      #IO.inspect(line)
+      #trimmed_content = String.trim(textString)
+      #IO.inspect(trimmed_content)
+      #sal=Regex.split(~r/\s+/, trimmed_content)
       #IO.inspect(sal)
-      Enum.flat_map(sal, &lex_raw_tokens(&1, line))
+      text
+      |> Enum.zip(line)
+      |> Enum.flat_map(&lex_raw_tokens(elem(&1, 0), elem(&1, 1)))
+      #Enum.flat_map(sal, &lex_raw_tokens(&1, line))
 
   end
 
@@ -37,9 +42,14 @@ defmodule Lexer do
         ]
   def lex_raw_tokens(program,line) when program != "" do
       #IO.puts(program)
+      #IO.inspect(line)
+      trimmed_content = String.trim(program)
+      #IO.puts(trimmed_content)
+      sal=String.replace(trimmed_content, " ","")
+      #IO.inspect(sal)
 
     {token, lin, rest} =
-      case program do
+      case sal do
         "{" <> rest ->
           {:open_brace, line, rest}
 
