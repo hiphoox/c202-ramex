@@ -3,45 +3,72 @@ defmodule Nqcc do
   Documentation for Nqcc.
   """
   @commands %{
-    "help" => "Prints this help"
+    "\t-h\t" => "help",
+    "\t-s\t" => "Generate Assembler\n\n\n"
   }
 
   def main(args) do
-    args
-    |> parse_args
-    |> process_args
+    #args
+    #|> parse_args
+    case args do
+    ["-h"] -> print_help_message()
+    ["-c",file_name] -> compile_file(file_name)
+    ["-s",file_name] -> print_assembler(file_name)
+    end
   end
 
-  def parse_args(args) do
-    OptionParser.parse(args, switches: [help: :boolean])
-  end
+ # def parse_args(args) do
+  #  OptionParser.parse(args, switches: [help: :boolean])
+  #end
 
-  defp process_args({[help: true], _, _}) do
-    print_help_message()
-  end
 
-  defp process_args({_, [file_name], _}) do
-    compile_file(file_name)
+
+  defp print_assembler(file_path) do
+    IO.puts("\nGenerate Assembly code:\n" <> file_path)
+
+    with {:ok, contentF} <- File.read(file_path),
+    sanitizedList when not is_tuple(sanitizedList) <- Sanitizer.sanitize_source(contentF),
+    lexedList when not is_tuple(lexedList) <- Lexer.scan_words(sanitizedList),
+    parsedAST when not is_tuple(parsedAST) <- Parser.parse_program(lexedList),
+    codeAssembly when not is_tuple(codeAssembly) <- CodeGenerator.generate_code(parsedAST)
+    do
+     {:ok, "Assembler code generated correctly"}
+    else
+      error -> IO.inspect(error)
+    end
   end
 
   defp compile_file(file_path) do
     IO.puts("Compiling file: " <> file_path)
     assembly_path = String.replace_trailing(file_path, ".c", ".s")
 
-    File.read!(file_path)
-    |> Sanitizer.sanitize_source()
-    |> IO.inspect(label: "\nSanitizer ouput")
-    |> Lexer.scan_words()
-    |> IO.inspect(label: "\nLexer ouput")
-    |> Parser.parse_program()
-    |> IO.inspect(label: "\nParser ouput")
-    |> CodeGenerator.generate_code()
-    |> Linker.generate_binary(assembly_path)
+    with {:ok, contentF} <- File.read(file_path),
+     sanitizedList when not is_tuple(sanitizedList) <- Sanitizer.sanitize_source(contentF),
+     IO.inspect(sanitizedList, label: "\nSanitizer output"),
+     lexedList when not is_tuple(lexedList) <- Lexer.scan_words(sanitizedList),
+     IO.inspect(lexedList, label: "\nLexer ouput"),
+     parsedAST when not is_tuple(parsedAST) <- Parser.parse_program(lexedList),
+     IO.inspect(parsedAST, label: "\nParser ouput"),
+     codeAssembly when not is_tuple(codeAssembly) <- CodeGenerator.generate_code(parsedAST),
+     #IO.inspect(codeAssembly)
+     :ok <- Linker.generate_binary(codeAssembly, assembly_path)
+     do
+      {:ok, "compilation complete"}
+     else
+      error -> IO.inspect(error)
+    end
+    #File.read!(file_path)
+    #|> Sanitizer.sanitize_source()
+    #|> IO.inspect(label: "\nSanitizer ouput")
+    #|> Lexer.scan_words()
+    #|> IO.inspect(label: "\nLexer ouput")
+    #|> Parser.parse_program()
+    #|> IO.inspect(label: "\nParser ouput")
+    #|> CodeGenerator.generate_code()
+    #|> Linker.generate_binary(assembly_path)
   end
 
   defp print_help_message do
-    IO.puts("\nnqcc --help file_name \n")
-
     IO.puts("\nThe compiler supports following options:\n")
 
     @commands
