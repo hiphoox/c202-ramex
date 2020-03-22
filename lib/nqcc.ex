@@ -4,7 +4,9 @@ defmodule Nqcc do
   """
   @commands %{
     "\t-h\t" => "help",
-    "\t-s\t" => "Generate Assembler\n\n\n"
+    "\t-c\t" => "Compiler the program",
+    "\t-s\t" => "Generate Assembler",
+    "\t-t\t" => "Token List\n\n\n"
   }
 
   def main(args) do
@@ -13,6 +15,7 @@ defmodule Nqcc do
     case args do
     ["-h"] -> print_help_message()
     ["-c",file_name] -> compile_file(file_name)
+    ["-t",file_name] -> token_list(file_name)
     ["-s",file_name] -> print_assembler(file_name)
     end
   end
@@ -66,6 +69,20 @@ defmodule Nqcc do
     #|> IO.inspect(label: "\nParser ouput")
     #|> CodeGenerator.generate_code()
     #|> Linker.generate_binary(assembly_path)
+  end
+
+  def token_list(file_path) do
+    IO.puts("\nToken List:\n" <> file_path)
+
+    with {:ok, contentF} <- File.read(file_path),
+    sanitizedList when not is_tuple(sanitizedList) <- Sanitizer.sanitize_source(contentF),
+    lexedList when not is_tuple(lexedList) <- Lexer.scan_words(sanitizedList),
+    IO.inspect(lexedList, label: "\nLexer ouput")
+    do
+     {:ok, "Token List generated correctly"}
+    else
+      error -> IO.inspect(error)
+    end
   end
 
   defp print_help_message do

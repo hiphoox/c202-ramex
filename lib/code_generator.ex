@@ -21,7 +21,7 @@ defmodule CodeGenerator do
 
   def emit_code(:program, code_snippet, _) do
     """
-        .section        __TEXT,__text,regular,pure_instructions
+        .section        #__TEXT,__text,regular,pure_instructions
         .p2align        4, 0x90
     """ <>
       code_snippet
