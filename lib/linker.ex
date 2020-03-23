@@ -7,6 +7,6 @@ defmodule Linker do
 
     File.write!(assembly_path, assembler)
     System.cmd("gcc", [assembly_file_name, "-o#{binary_file_name}"], cd: output_dir_name)
-    File.rm!(assembly_path)
+    #File.rm!(assembly_path)
   end
 end
