@@ -82,6 +82,15 @@ defmodule Lexer do
         "main" <> rest ->
           {:main_keyword, line, rest}
 
+        "-" <> rest ->
+          {:negation, line, rest}
+
+        "~" <> rest ->
+          {:bitwise, line, rest}
+
+        "!" <> rest ->
+          {:logical_negation, line, rest}
+
         rest ->
           get_constant(rest, line)
       end
