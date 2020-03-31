@@ -126,13 +126,37 @@ defmodule Parser do
           {{:error, <<_::64, _::_*8>>} | AST.t(), any}
   def parse_expression([tup_token | rest]) do
     next_token=elem(tup_token, 0)
+    IO.inspect(next_token)
     lineConstant=elem(tup_token, 1)
     #lineConstant=Enum.join(elem(tup_token, 1)," ")
     #IO.puts(lineConstant)
 
-    case next_token do
-      {:constant, value} -> {%AST{node_name: :constant, value: value}, rest}
-      _ -> {{:error, "Error: constant value missed in line " <> Integer.to_string(lineConstant)}, rest}
-    end
+
+      case next_token do
+        {:constant, value} ->
+          #IO.puts("si es constante")
+          {%AST{node_name: :constant, value: value}, rest}
+        _ ->
+
+        #IO.puts("No es constante")
+        expression=parse_expression(rest)
+        tree=elem(expression, 0)
+        rest=elem(expression, 1)
+        #IO.inspect(tree)
+        #IO.inspect(rest)
+
+        case next_token do
+          :negation ->
+            {%AST{node_name: :negation, left_node: tree}, rest}
+          :bitwise ->
+            {%AST{node_name: :bitwise, left_node: tree}, rest}
+          :logical_negation ->
+            {%AST{node_name: :logical_negation, left_node: tree}, rest}
+          _ ->
+          {{:error, "Error: missing constant at line " <> Integer.to_string(lineConstant)}, rest}
+        end
+
+      end
+
   end
 end
