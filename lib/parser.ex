@@ -95,6 +95,7 @@ defmodule Parser do
     #lineRet=Enum.join(elem(tup_token, 1)," ")
     #IO.inspect(next_token)
     if next_token == :return_keyword do
+      #IO.inspect(rest)
       expression = parse_expression(rest)
       #IO.inspect(next_token)
       #IO.inspect(expression)
@@ -126,7 +127,7 @@ defmodule Parser do
           {{:error, <<_::64, _::_*8>>} | AST.t(), any}
   def parse_expression([tup_token | rest]) do
     next_token=elem(tup_token, 0)
-    IO.inspect(next_token)
+    #IO.inspect(next_token)
     lineConstant=elem(tup_token, 1)
     #lineConstant=Enum.join(elem(tup_token, 1)," ")
     #IO.puts(lineConstant)
@@ -139,6 +140,7 @@ defmodule Parser do
         _ ->
 
         #IO.puts("No es constante")
+        #IO.inspect(rest)
         expression=parse_expression(rest)
         tree=elem(expression, 0)
         rest=elem(expression, 1)
@@ -158,5 +160,9 @@ defmodule Parser do
 
       end
 
+  end
+
+  def parse_expression([]) do
+    {:error, :error}
   end
 end
