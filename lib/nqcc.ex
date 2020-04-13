@@ -37,6 +37,8 @@ defmodule Nqcc do
     parsedAST when not is_tuple(parsedAST) <- Parser.parse_program(lexedList),
     codeAssembly when not is_tuple(codeAssembly) <- CodeGenerator.generate_code(parsedAST)
     do
+      IO.puts("Code generator output")
+      IO.puts(codeAssembly)
      {:ok, IO.puts("Assembler code generated correctly")}
     else
       error -> IO.inspect(error)
@@ -51,11 +53,12 @@ defmodule Nqcc do
      sanitizedList when not is_tuple(sanitizedList) <- Sanitizer.sanitize_source(contentF),
      IO.inspect(sanitizedList, label: "\nSanitizer output"),
      lexedList when not is_tuple(lexedList) <- Lexer.scan_words(sanitizedList),
-     IO.inspect(lexedList, label: "\nLexer ouput"),
+     IO.inspect(lexedList, label: "\nLexer output"),
      parsedAST when not is_tuple(parsedAST) <- Parser.parse_program(lexedList),
-     IO.inspect(parsedAST, label: "\nParser ouput"),
+     IO.inspect(parsedAST, label: "\nParser output"),
      codeAssembly when not is_tuple(codeAssembly) <- CodeGenerator.generate_code(parsedAST),
-     #IO.puts(codeAssembly),
+     IO.puts("Code generator output"),
+     IO.puts(codeAssembly),
      Linker.generate_binary(codeAssembly, assembly_path)
      do
       {:ok, IO.puts("compilation complete\n")}
@@ -79,7 +82,7 @@ defmodule Nqcc do
     with {:ok, contentF} <- File.read(file_path),
     sanitizedList when not is_tuple(sanitizedList) <- Sanitizer.sanitize_source(contentF),
     lexedList when not is_tuple(lexedList) <- Lexer.scan_words(sanitizedList),
-    IO.inspect(lexedList, label: "\nLexer ouput")
+    IO.inspect(lexedList, label: "\nLexer output")
     do
      {:ok, IO.puts("Token List generated correctly")}
     else
@@ -94,7 +97,7 @@ defmodule Nqcc do
     sanitizedList when not is_tuple(sanitizedList) <- Sanitizer.sanitize_source(contentF),
     lexedList when not is_tuple(lexedList) <- Lexer.scan_words(sanitizedList),
     parsedAST when not is_tuple(parsedAST) <- Parser.parse_program(lexedList),
-    IO.inspect(parsedAST, label: "\nParser ouput:")
+    IO.inspect(parsedAST, label: "\nParser output:")
     do
       {:ok, IO.puts("AST tree generated correctly")}
      else
