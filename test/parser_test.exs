@@ -115,6 +115,54 @@ defmodule ParserTest do
     assert Parser.parse_program(l_code) == state[:ast]
   end
 
+  test "negation", state do
+    code = """
+      int main() {
+        return -2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :negation} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  test "logical_negation", state do
+    code = """
+      int main() {
+        return !2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :logical_negation} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  test "bitwise", state do
+    code = """
+      int main() {
+        return ~2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :bitwise} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
   # tests to fail
   test "constant missing", _state do
     code = """
@@ -126,7 +174,7 @@ defmodule ParserTest do
     s_code = Sanitizer.sanitize_source(code)
     l_code = Lexer.scan_words(s_code)
 
-    expected_result = {:error, "Error: constant value missed in line 2"}
+    expected_result = {:error, "Error: missing constant at line 2"}
     assert Parser.parse_program(l_code) == expected_result
   end
 

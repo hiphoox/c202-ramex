@@ -163,6 +163,46 @@ defmodule LexerTest do
              expected_result
   end
 
+  test "negation", state do
+    code = """
+      int main() {
+        return -2;
+    }
+    """
+
+    expected_result=List.insert_at(state[:tokens],6, {:negation, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "logic_negation", state do
+    code = """
+      int main() {
+        return !2;
+    }
+    """
+
+    expected_result=List.insert_at(state[:tokens],6, {:logical_negation, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "bitwise", state do
+    code = """
+      int main() {
+        return ~2;
+    }
+    """
+
+    expected_result=List.insert_at(state[:tokens],6, {:bitwise, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+
   # tests to fail
   test "wrong case", _state do
     code = """
