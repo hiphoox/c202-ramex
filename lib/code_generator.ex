@@ -1,8 +1,8 @@
 defmodule CodeGenerator do
   def generate_code(ast) do
     code = post_order(ast)
-    IO.puts("\nCode Generator output:")
-    IO.puts(code)
+    #IO.puts("\nCode Generator output:")
+    #IO.puts(code)
     code
   end
 
@@ -21,7 +21,7 @@ defmodule CodeGenerator do
 
   def emit_code(:program, code_snippet, _) do
     """
-        .section        #__TEXT,__text,regular,pure_instructions
+        .section        ##__TEXT,__text,regular,pure_instructions
         .p2align        4, 0x90
     """ <>
       code_snippet
@@ -50,8 +50,7 @@ defmodule CodeGenerator do
     rest=List.to_string(restList2)
     #IO.inspect(rest)
       """
-          movl    #{const}, %eax
-
+        movl #{const}, %eax
       """ <>
       rest
   end
@@ -65,37 +64,53 @@ defmodule CodeGenerator do
     codetoTuple=List.to_tuple(codetoList)
     const=elem(codetoTuple, 0)
     number =
-      case const do
-        "$" <> rest ->
-          rest
-      end
+     case const do
+       "$" <> rest ->
+      rest
+    end
 
     if number=="0" do
       code_snippet <>
       """
-        movl $1, %eax
+      movl $1, %eax
       """
     else
       code_snippet <>
       """
-        movl $0, %eax
+       not %rax
       """
-    end
+    #end
 
   end
 
   def emit_code(:negation, code_snippet, _) do
     code_snippet <>
     """
-      neg %eax
+     neg %eax
     """
   end
 
   def emit_code(:logical_negation, code_snippet, _) do
-    code_snippet <>
-    """
-      not %eax
-    """
+    codetoList=String.split(code_snippet, " ")
+    codetoTuple=List.to_tuple(codetoList)
+    const=elem(codetoTuple, 0)
+    number =
+      case const do
+      "$" <> rest ->
+        rest
+      end
+
+    if number=="0" do
+      code_snippet <>
+      """
+       movl $1, %eax
+      """
+    else
+      code_snippet <>
+      """
+       movl $0, %eax
+      """
+    end
   end
 
 
