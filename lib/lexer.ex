@@ -12,6 +12,7 @@ defmodule Lexer do
 
   end
 
+  @spec check_error(any) :: any
   def check_error(listLex) do
     if Enum.find_value(listLex, false, fn(x)->x==:error end)==true do
       {:error}
@@ -83,13 +84,22 @@ defmodule Lexer do
           {:main_keyword, line, rest}
 
         "-" <> rest ->
-          {:negation, line, rest}
+          {:minus, line, rest}
 
         "~" <> rest ->
           {:bitwise, line, rest}
 
         "!" <> rest ->
           {:logical_negation, line, rest}
+
+        "+" <> rest ->
+          {:addition, line, rest}
+
+        "*" <> rest ->
+          {:multiplication, line, rest}
+
+        "/" <> rest ->
+          {:division, line, rest}
 
         rest ->
           get_constant(rest, line)
