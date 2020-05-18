@@ -170,7 +170,7 @@ defmodule LexerTest do
     }
     """
 
-    expected_result=List.insert_at(state[:tokens],6, {:negation, 2})
+    expected_result=List.insert_at(state[:tokens],6, {:minus, 2})
 
     s_code = Sanitizer.sanitize_source(code)
     assert Lexer.scan_words(s_code) == expected_result
@@ -202,6 +202,61 @@ defmodule LexerTest do
     assert Lexer.scan_words(s_code) == expected_result
   end
 
+  test "plus_tkn", state do
+    code = """
+      int main() {
+        return 2+2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:addition, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "substraction_tkn", state do
+    code = """
+      int main() {
+        return 2-2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:minus, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "multiplication_tkn", state do
+    code = """
+      int main() {
+        return 2*2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:multiplication, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "division_tkn", state do
+    code = """
+      int main() {
+        return 2/2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:division, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
 
   # tests to fail
   test "wrong case", _state do

@@ -27,7 +27,7 @@ defmodule ParserTest do
     }}
   end
 
-  # tests to pass
+  ################## tests to pass ######################
   test "return 2", state do
     code = """
       int main() {
@@ -124,7 +124,7 @@ defmodule ParserTest do
 
     ast=state[:ast]
     expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
-      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :negation} end
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :minus} end
 
     s_code = Sanitizer.sanitize_source(code)
     l_code = Lexer.scan_words(s_code)
@@ -163,7 +163,411 @@ defmodule ParserTest do
     assert Parser.parse_program(l_code) == expected_result
   end
 
-  # tests to fail
+  test "addition", state do
+    code = """
+      int main() {
+        return 2+2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :addition, right_node: %AST{node_name: :constant, value: 2}} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  test "substraction", state do
+    code = """
+      int main() {
+        return 2-2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :minus, right_node: %AST{node_name: :constant, value: 2}} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  test "multiplication", state do
+    code = """
+      int main() {
+        return 2*2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :multiplication, right_node: %AST{node_name: :constant, value: 2}} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  test "division", state do
+    code = """
+      int main() {
+        return 2/2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :division, right_node: %AST{node_name: :constant, value: 2}} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  test "parenthesis", state do
+    code = """
+      int main() {
+        return (2+3)/2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :addition,
+        right_node: %AST{node_name: :constant, value: 3}}, node_name: :division,
+        right_node: %AST{node_name: :constant, value: 2}} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  test "multiple_binary", state do
+    code = """
+      int main() {
+        return 2*2+2/2-2;
+    }
+    """
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{left_node: %AST{left_node: %AST{node_name: :constant, value: 2},
+        node_name: :multiplication, right_node: %AST{node_name: :constant, value: 2}},
+        node_name: :addition, right_node: %AST{left_node: %AST{node_name: :constant, value: 2},
+        node_name: :division, right_node: %AST{node_name: :constant, value: 2}}},
+        node_name: :minus, right_node: %AST{node_name: :constant, value: 2}} end
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
+  ###########test to pass | unary tests#############
+  test "return 2_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    assert Parser.parse_program(code) == state[:ast]
+  end
+
+  test "return 0_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 0}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+
+    ast=state[:ast]
+
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+       %AST{node_name: :constant, value: 0} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "multi_digit_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 100}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+
+
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{node_name: :constant, value: 100} end
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "new_lines_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 2},
+      {:open_paren, 3},
+      {:close_paren, 4},
+      {:open_brace, 5},
+      {:return_keyword, 6},
+      {{:constant, 2}, 7},
+      {:semicolon, 8},
+      {:close_brace, 9}]
+
+
+
+    assert Parser.parse_program(code) == state[:ast]
+  end
+
+  test "no_newlines_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 1},
+      {{:constant, 2}, 1},
+      {:semicolon, 1},
+      {:close_brace, 1}]
+
+
+
+    assert Parser.parse_program(code) == state[:ast]
+  end
+
+  test "negation_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {:minus, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :minus} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "logical_negation_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {:logical_negation, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :logical_negation} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "bitwise_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {:bitwise, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :bitwise} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "addition_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 2}, 2},
+      {:addition, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :addition, right_node: %AST{node_name: :constant, value: 2}} end
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "substraction_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 2}, 2},
+      {:minus, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :minus, right_node: %AST{node_name: :constant, value: 2}} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "multiplication_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 2}, 2},
+      {:multiplication, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :multiplication, right_node: %AST{node_name: :constant, value: 2}} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "division_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 2}, 2},
+      {:division, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :division, right_node: %AST{node_name: :constant, value: 2}} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "parenthesis_unary", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {:open_paren, 2},
+      {{:constant, 2}, 2},
+      {:addition, 2},
+      {{:constant, 3}, 2},
+      {:close_paren, 2},
+      {:division, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{left_node: %AST{node_name: :constant, value: 2}, node_name: :addition,
+        right_node: %AST{node_name: :constant, value: 3}}, node_name: :division,
+        right_node: %AST{node_name: :constant, value: 2}} end
+
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  test "multiple_binary_unarytest", state do
+    code = [
+      {:int_keyword, 1},
+      {:main_keyword, 1},
+      {:open_paren, 1},
+      {:close_paren, 1},
+      {:open_brace, 1},
+      {:return_keyword, 2},
+      {{:constant, 2}, 2},
+      {:multiplication, 2},
+      {{:constant, 2}, 2},
+      {:addition, 2},
+      {{:constant, 2}, 2},
+      {:division, 2},
+      {{:constant, 2}, 2},
+      {:minus, 2},
+      {{:constant, 2}, 2},
+      {:semicolon, 2},
+      {:close_brace, 3}]
+
+    ast=state[:ast]
+    expected_result = update_in ast, [Access.key!(:left_node), Access.key!(:left_node), Access.key!(:left_node)], fn(_left_node) ->
+      %AST{left_node: %AST{left_node: %AST{left_node: %AST{node_name: :constant, value: 2},
+        node_name: :multiplication, right_node: %AST{node_name: :constant, value: 2}},
+        node_name: :addition, right_node: %AST{left_node: %AST{node_name: :constant, value: 2},
+        node_name: :division, right_node: %AST{node_name: :constant, value: 2}}},
+        node_name: :minus, right_node: %AST{node_name: :constant, value: 2}} end
+
+    assert Parser.parse_program(code) == expected_result
+  end
+
+  ############# tests to fail ##############
   test "constant missing", _state do
     code = """
     int main() {
@@ -205,4 +609,6 @@ defmodule ParserTest do
     expected_result = {:error, "Error: there are more elements after function end"}
     assert Parser.parse_program(l_code) == expected_result
   end
+
+
 end

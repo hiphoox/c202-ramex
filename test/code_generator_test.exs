@@ -10,11 +10,11 @@ defmodule CodeGeneratorTest do
     _main:                    ## @main
         movl    $2, %eax
 
-       ret
+         ret
     """}
   end
 
-  #test to pass
+  ############# test to pass ##############
   test "ret 2", state do
     code = """
       int main() {
@@ -47,7 +47,7 @@ defmodule CodeGeneratorTest do
 _main:                    ## @main
     movl    $0, %eax
 
-   ret
+     ret
 """
 
     assert CodeGenerator.generate_code(p_code) == expected_result
@@ -63,6 +63,7 @@ _main:                    ## @main
     s_code = Sanitizer.sanitize_source(code)
     l_code = Lexer.scan_words(s_code)
     p_code = Parser.parse_program(l_code)
+    #IO.inspect(p_code)
 
     _previous_result=state[:assembly]
     expected_result="""
@@ -72,8 +73,8 @@ _main:                    ## @main
 _main:                    ## @main
     movl    $2, %eax
 
-   neg %eax
-  ret
+    neg %eax
+    ret
 """
 
     assert CodeGenerator.generate_code(p_code) == expected_result
@@ -99,7 +100,7 @@ _main:                    ## @main
     movl    $0, %eax
 
    movl $1, %eax
-  ret
+    ret
 """
 
     assert CodeGenerator.generate_code(p_code) == expected_result
@@ -125,7 +126,7 @@ _main:                    ## @main
     movl    $5, %eax
 
    movl $0, %eax
-  ret
+    ret
 """
 
     assert CodeGenerator.generate_code(p_code) == expected_result
@@ -151,7 +152,7 @@ _main:                    ## @main
     movl    $0, %eax
 
    movl $1, %eax
-  ret
+    ret
 """
 
     assert CodeGenerator.generate_code(p_code) == expected_result
@@ -176,8 +177,8 @@ _main:                    ## @main
 _main:                    ## @main
     movl    $2, %eax
 
-   not %eax
-  ret
+    not %eax
+    ret
 """
 
     assert CodeGenerator.generate_code(p_code) == expected_result
@@ -202,15 +203,130 @@ _main:                    ## @main
 _main:                    ## @main
     movl    $2, %eax
 
+    neg %eax
    neg %eax
-  neg %eax
-  neg %eax
-  ret
+   neg %eax
+    ret
 """
 
     assert CodeGenerator.generate_code(p_code) == expected_result
   end
 
+  test "asm_addition", state do
+    code = """
+      int main() {
+        return 2+2;
+    }
+    """
 
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    p_code = Parser.parse_program(l_code)
+
+    _previous_result=state[:assembly]
+    expected_result="""
+    .section        #__TEXT,__text,regular,pure_instructions
+    .p2align        4, 0x90
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
+    movl    $2, %eax
+
+    push %eax
+    movl $2 , %eax\r
+    pop %ecx
+    addl %ecx, %eax
+    ret
+"""
+
+    assert CodeGenerator.generate_code(p_code) == expected_result
+  end
+
+  test "asm_substraction", state do
+    code = """
+      int main() {
+        return 2-2;
+    }
+    """
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    p_code = Parser.parse_program(l_code)
+
+    _previous_result=state[:assembly]
+    expected_result="""
+    .section        #__TEXT,__text,regular,pure_instructions
+    .p2align        4, 0x90
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
+    movl    $2, %eax
+
+    push %eax
+    movl $2 , %eax\r
+    pop %ecx
+    subl %ecx, %eax
+    ret
+"""
+
+    assert CodeGenerator.generate_code(p_code) == expected_result
+  end
+
+  test "asm_multiplication", state do
+    code = """
+      int main() {
+        return 2*2;
+    }
+    """
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    p_code = Parser.parse_program(l_code)
+
+    _previous_result=state[:assembly]
+    expected_result="""
+    .section        #__TEXT,__text,regular,pure_instructions
+    .p2align        4, 0x90
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
+    movl    $2, %eax
+
+    push %eax
+    movl $2 , %eax\r
+    pop %ecx
+    imul %ecx, %eax
+    ret
+"""
+
+    assert CodeGenerator.generate_code(p_code) == expected_result
+  end
+
+  test "asm_division", state do
+    code = """
+      int main() {
+        return 2/2;
+    }
+    """
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+    p_code = Parser.parse_program(l_code)
+
+    _previous_result=state[:assembly]
+    expected_result="""
+    .section        #__TEXT,__text,regular,pure_instructions
+    .p2align        4, 0x90
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
+    movl    $2, %eax
+
+    push %eax
+    cdq
+    movl $2 , %eax\r
+    pop %ecx
+    idivl %ecx
+    ret
+"""
+
+    assert CodeGenerator.generate_code(p_code) == expected_result
+  end
 
 end
