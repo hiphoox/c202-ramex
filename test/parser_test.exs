@@ -610,5 +610,19 @@ defmodule ParserTest do
     assert Parser.parse_program(l_code) == expected_result
   end
 
+  test "binaryOP missing paren", _state do
+    code = """
+    int main() {
+      return (2+2;
+    }
+    """
+
+    s_code = Sanitizer.sanitize_source(code)
+    l_code = Lexer.scan_words(s_code)
+
+    expected_result = {:error, "Error: close parenthesis missing at line 2"}
+    assert Parser.parse_program(l_code) == expected_result
+  end
+
 
 end

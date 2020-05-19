@@ -301,12 +301,12 @@ defmodule Parser do
         lineCloseParen=elem(tup_token, 1)
         if next_token_tmp != :close_paren do
           {{:error, "Error: close parenthesis missing at line " <> Integer.to_string(lineCloseParen)}, rest}
-        end
+        else
         {tree, rest}
+        end
       :minus ->
 
         [tup_token | rest] = rest
-        #next_token_tmp=elem(tup_token,0)
         factor=parse_factor([tup_token | rest])
         constant_node=elem(factor,0)
         rest=elem(factor, 1)
