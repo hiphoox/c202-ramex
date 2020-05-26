@@ -8,7 +8,7 @@ defmodule Lexer do
       |> Enum.zip(line)
       |> Enum.flat_map(&lex_raw_tokens(elem(&1, 0), elem(&1, 1)))
       |> check_error()
-      #Enum.flat_map(sal, &lex_raw_tokens(&1, line))
+
 
   end
 
@@ -24,7 +24,7 @@ defmodule Lexer do
 
   @spec get_constant(binary, any) :: {:error | {:constant, any}, any, binary}
   def get_constant(program, line) do
-    #IO.inspect(program)
+
     invalid=program
     case Regex.run(~r/^\d+/, program) do
       [value] ->
@@ -50,12 +50,9 @@ defmodule Lexer do
           | {:constant, any}
         ]
   def lex_raw_tokens(program,line) when program != "" and not is_tuple(program) do
-      #IO.puts(program)
-      #IO.inspect(line)
+
       trimmed_content = String.trim(program)
-      #IO.puts(trimmed_content)
       sal=String.replace(trimmed_content, " ","")
-      #IO.inspect(sal)
 
     {token, lin, rest} =
       case sal do
@@ -89,6 +86,9 @@ defmodule Lexer do
         "~" <> rest ->
           {:bitwise, line, rest}
 
+        "!=" <> rest ->
+          {:not_equal, line, rest}
+
         "!" <> rest ->
           {:logical_negation, line, rest}
 
@@ -101,22 +101,41 @@ defmodule Lexer do
         "/" <> rest ->
           {:division, line, rest}
 
+        "&&" <> rest ->
+          {:and, line, rest}
+
+        "||" <> rest ->
+          {:or, line, rest}
+
+        "==" <> rest ->
+          {:equal, line, rest}
+
+        "<=" <> rest ->
+          {:less_than_equal, line, rest}
+
+        ">=" <> rest ->
+          {:greater_than_equal, line, rest}
+
+        "<" <> rest ->
+          {:less_than, line, rest}
+
+        ">" <> rest ->
+          {:greater_than, line, rest}
+
         rest ->
           get_constant(rest, line)
       end
-      #IO.inspect(token)
     if token != :error do
-      #IO.inspect(rest, label: "resto: ")
+
 
       remaining_tokens = lex_raw_tokens(rest,line)
 
-      #IO.inspect(remaining_tokens, label: "remaining tokens: ")
+
       [{token, lin} | remaining_tokens]
 
-      #[token | [lin | [remaining_tokens | []]]]
-      #[token | remaining_tokens]
+
     else
-      #[program]
+
       [:error]
     end
   end
