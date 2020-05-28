@@ -127,8 +127,411 @@ defmodule Parser do
 
   end
 
-  @spec while_expression(nonempty_maybe_improper_list, any) :: {any, nonempty_maybe_improper_list}
   def while_expression([tup_token | rest], tree) do
+
+    term=while_and([tup_token | rest], tree)
+
+    left=elem(term, 0)
+    rest=elem(term, 1)
+
+    [tup_token | rest] = rest
+    next_token=elem(tup_token, 0)
+
+    if next_token == :or do
+
+      term=while_and(rest, tree)
+
+      right=elem(term, 0)
+      rest=elem(term, 1)
+
+      new_tree=%AST{node_name: :or, left_node: left, right_node: right}
+
+      [tup_token | rst] = rest
+      next_token=elem(tup_token, 0)
+
+      if next_token == :or do
+
+        tree_rest=while_expression(rst, new_tree)
+        tree=elem(tree_rest, 0)
+        rest=elem(tree_rest, 1)
+          {%AST{node_name: :or, left_node: new_tree, right_node: tree}, rest}
+
+
+      else
+        case right do
+          {:error, error_message} ->
+            {{:error, error_message}, rest}
+          _ ->
+            {new_tree, rest}
+        end
+
+      end
+    else
+      {left, [tup_token | rest]}
+    end
+
+  end
+
+  def while_and([tup_token | rest], tree) do
+
+    term=while_equality([tup_token | rest], tree)
+
+    left=elem(term, 0)
+    rest=elem(term, 1)
+
+    [tup_token | rest] = rest
+    next_token=elem(tup_token, 0)
+
+    if next_token == :and do
+
+      term=while_equality(rest, tree)
+
+      right=elem(term, 0)
+      rest=elem(term, 1)
+
+      new_tree=%AST{node_name: :and, left_node: left, right_node: right}
+
+      [tup_token | rst] = rest
+      next_token=elem(tup_token, 0)
+
+      if next_token == :and do
+
+        tree_rest=while_expression(rst, new_tree)
+        tree=elem(tree_rest, 0)
+        rest=elem(tree_rest, 1)
+          {%AST{node_name: :and, left_node: new_tree, right_node: tree}, rest}
+
+
+
+      else
+        case right do
+          {:error, error_message} ->
+            {{:error, error_message}, rest}
+          _ ->
+            {new_tree, rest}
+        end
+      end
+    else
+      {left, [tup_token | rest]}
+    end
+
+  end
+
+  def while_equality([tup_token | rest], tree) do
+
+    term=while_relational([tup_token | rest], tree)
+
+    left=elem(term, 0)
+    rest=elem(term, 1)
+
+    [tup_token | rest] = rest
+    next_token=elem(tup_token, 0)
+
+    if next_token == :equal do
+
+      term=while_term(rest, tree)
+
+      right=elem(term, 0)
+      rest=elem(term, 1)
+
+      new_tree=%AST{node_name: :equal, left_node: left, right_node: right}
+
+      [tup_token | rst] = rest
+      next_token=elem(tup_token, 0)
+
+      if next_token == :equal do
+
+        tree_rest=while_expression(rst, new_tree)
+        tree=elem(tree_rest, 0)
+        rest=elem(tree_rest, 1)
+          {%AST{node_name: :equal, left_node: new_tree, right_node: tree}, rest}
+
+      else
+        if next_token == :not_equal do
+
+          tree_rest=while_expression(rst, new_tree)
+          tree=elem(tree_rest, 0)
+          rest=elem(tree_rest, 1)
+          {%AST{node_name: :not_equal, left_node: new_tree, right_node: tree}, rest}
+
+        else
+
+          case right do
+            {:error, error_message} ->
+              {{:error, error_message}, rest}
+            _ ->
+              {new_tree, rest}
+          end
+        end
+      end
+    else
+      if next_token == :not_equal do
+
+        term=while_relational(rest, tree)
+        right=elem(term, 0)
+        rest=elem(term, 1)
+        new_tree=%AST{node_name: :not_equal, left_node: left, right_node: right}
+        [tup_token | rst] = rest
+        next_token=elem(tup_token, 0)
+
+        if next_token == :equal do
+          tree_rest=while_expression(rst, new_tree)
+          tree=elem(tree_rest, 0)
+          rest=elem(tree_rest, 1)
+          {%AST{node_name: :equal, left_node: new_tree, right_node: tree}, rest}
+
+        else
+          if next_token == :not_equal do
+            tree_rest=while_expression(rst, new_tree)
+            tree=elem(tree_rest, 0)
+            rest=elem(tree_rest, 1)
+            {%AST{node_name: :not_equal, left_node: new_tree, right_node: tree}, rest}
+
+
+          else
+            case right do
+              {:error, error_message} ->
+                {{:error, error_message}, rest}
+              _ ->
+                {new_tree, rest}
+            end
+          end
+        end
+
+
+
+      else
+        {left, [tup_token | rest]}
+      end
+
+    end
+
+  end
+
+  def while_relational([tup_token | rest], tree) do
+
+    term=while_additive([tup_token | rest], tree)
+
+    left=elem(term, 0)
+    rest=elem(term, 1)
+
+    [tup_token | rest] = rest
+    next_token=elem(tup_token, 0)
+
+    if next_token == :less_than do
+
+      term=while_additive(rest, tree)
+
+      right=elem(term, 0)
+      rest=elem(term, 1)
+
+      new_tree=%AST{node_name: :less_than, left_node: left, right_node: right}
+
+      [tup_token | rst] = rest
+      next_token=elem(tup_token, 0)
+
+      if next_token == :less_than do
+
+        tree_rest=while_expression(rst, new_tree)
+        tree=elem(tree_rest, 0)
+        rest=elem(tree_rest, 1)
+          {%AST{node_name: :less_than, left_node: new_tree, right_node: tree}, rest}
+
+      else
+        if next_token == :greater_than do
+
+          tree_rest=while_expression(rst, new_tree)
+          tree=elem(tree_rest, 0)
+          rest=elem(tree_rest, 1)
+          {%AST{node_name: :greater_than, left_node: new_tree, right_node: tree}, rest}
+
+        else
+          if next_token == :less_than_equal do
+
+            tree_rest=while_expression(rst, new_tree)
+            tree=elem(tree_rest, 0)
+            rest=elem(tree_rest, 1)
+            {%AST{node_name: :less_than_equal, left_node: new_tree, right_node: tree}, rest}
+          else
+            if next_token == :greater_than_equal do
+
+              tree_rest=while_expression(rst, new_tree)
+              tree=elem(tree_rest, 0)
+              rest=elem(tree_rest, 1)
+              {%AST{node_name: :greater_than_equal, left_node: new_tree, right_node: tree}, rest}
+            else
+              case right do
+                {:error, error_message} ->
+                  {{:error, error_message}, rest}
+                _ ->
+                  {new_tree, rest}
+              end
+            end
+          end
+        end
+      end
+    else
+      if next_token == :greater_than do
+
+        term=while_additive(rest, tree)
+        right=elem(term, 0)
+        rest=elem(term, 1)
+        new_tree=%AST{node_name: :greater_than, left_node: left, right_node: right}
+        [tup_token | rst] = rest
+        next_token=elem(tup_token, 0)
+
+        if next_token == :less_than do
+          tree_rest=while_expression(rst, new_tree)
+          tree=elem(tree_rest, 0)
+          rest=elem(tree_rest, 1)
+          {%AST{node_name: :less_than, left_node: new_tree, right_node: tree}, rest}
+
+        else
+          if next_token == :greater_than do
+            tree_rest=while_expression(rst, new_tree)
+            tree=elem(tree_rest, 0)
+            rest=elem(tree_rest, 1)
+            {%AST{node_name: :greater_than, left_node: new_tree, right_node: tree}, rest}
+
+
+          else
+            if next_token == :less_than_equal do
+
+              tree_rest=while_expression(rst, new_tree)
+              tree=elem(tree_rest, 0)
+              rest=elem(tree_rest, 1)
+              {%AST{node_name: :less_than_equal, left_node: new_tree, right_node: tree}, rest}
+            else
+              if next_token == :greater_than_equal do
+
+                tree_rest=while_expression(rst, new_tree)
+                tree=elem(tree_rest, 0)
+                rest=elem(tree_rest, 1)
+                {%AST{node_name: :greater_than_equal, left_node: new_tree, right_node: tree}, rest}
+              else
+                case right do
+                  {:error, error_message} ->
+                    {{:error, error_message}, rest}
+                  _ ->
+                    {new_tree, rest}
+                end
+              end
+            end
+          end
+        end
+
+
+
+      else
+        if next_token == :less_than_equal do
+
+          term=while_additive(rest, tree)
+          right=elem(term, 0)
+          rest=elem(term, 1)
+          new_tree=%AST{node_name: :less_than_equal, left_node: left, right_node: right}
+          [tup_token | rst] = rest
+          next_token=elem(tup_token, 0)
+
+          if next_token == :less_than do
+            tree_rest=while_expression(rst, new_tree)
+            tree=elem(tree_rest, 0)
+            rest=elem(tree_rest, 1)
+            {%AST{node_name: :less_than, left_node: new_tree, right_node: tree}, rest}
+
+          else
+            if next_token == :greater_than do
+              tree_rest=while_expression(rst, new_tree)
+              tree=elem(tree_rest, 0)
+              rest=elem(tree_rest, 1)
+              {%AST{node_name: :greater_than, left_node: new_tree, right_node: tree}, rest}
+
+
+            else
+              if next_token == :less_than_equal do
+
+                tree_rest=while_expression(rst, new_tree)
+                tree=elem(tree_rest, 0)
+                rest=elem(tree_rest, 1)
+                {%AST{node_name: :less_than_equal, left_node: new_tree, right_node: tree}, rest}
+              else
+                if next_token == :greater_than_equal do
+
+                  tree_rest=while_expression(rst, new_tree)
+                  tree=elem(tree_rest, 0)
+                  rest=elem(tree_rest, 1)
+                  {%AST{node_name: :greater_than_equal, left_node: new_tree, right_node: tree}, rest}
+                else
+                  case right do
+                    {:error, error_message} ->
+                      {{:error, error_message}, rest}
+                    _ ->
+                      {new_tree, rest}
+                  end
+                end
+              end
+            end
+          end
+        else
+          if next_token == :greater_than_equal do
+
+            term=while_additive(rest, tree)
+            right=elem(term, 0)
+            rest=elem(term, 1)
+            new_tree=%AST{node_name: :greater_than_equal, left_node: left, right_node: right}
+            [tup_token | rst] = rest
+            next_token=elem(tup_token, 0)
+
+            if next_token == :less_than do
+              tree_rest=while_expression(rst, new_tree)
+              tree=elem(tree_rest, 0)
+              rest=elem(tree_rest, 1)
+              {%AST{node_name: :less_than, left_node: new_tree, right_node: tree}, rest}
+
+            else
+              if next_token == :greater_than do
+                tree_rest=while_expression(rst, new_tree)
+                tree=elem(tree_rest, 0)
+                rest=elem(tree_rest, 1)
+                {%AST{node_name: :greater_than, left_node: new_tree, right_node: tree}, rest}
+
+
+              else
+                if next_token == :less_than_equal do
+
+                  tree_rest=while_expression(rst, new_tree)
+                  tree=elem(tree_rest, 0)
+                  rest=elem(tree_rest, 1)
+                  {%AST{node_name: :less_than_equal, left_node: new_tree, right_node: tree}, rest}
+                else
+                  if next_token == :greater_than_equal do
+
+                    tree_rest=while_expression(rst, new_tree)
+                    tree=elem(tree_rest, 0)
+                    rest=elem(tree_rest, 1)
+                    {%AST{node_name: :greater_than_equal, left_node: new_tree, right_node: tree}, rest}
+                  else
+                    case right do
+                      {:error, error_message} ->
+                        {{:error, error_message}, rest}
+                      _ ->
+                        {new_tree, rest}
+                    end
+                  end
+                end
+              end
+            end
+          else
+            {left, [tup_token | rest]}
+          end
+        end
+      end
+
+    end
+
+  end
+
+  @spec while_expression(nonempty_maybe_improper_list, any) :: {any, nonempty_maybe_improper_list}
+  def while_additive([tup_token | rest], tree) do
 
     term=while_term([tup_token | rest], tree)
 
@@ -166,8 +569,13 @@ defmodule Parser do
           {%AST{node_name: :minus, left_node: new_tree, right_node: tree}, rest}
 
         else
-
-          {new_tree, rest}
+          case right do
+            {:error, error_message} ->
+              {{:error, error_message}, rest}
+            _ ->
+              {new_tree, rest}
+          end
+          #{new_tree, rest}
         end
       end
     else
@@ -195,7 +603,12 @@ defmodule Parser do
 
 
           else
-            {new_tree, rest}
+            case right do
+              {:error, error_message} ->
+                {{:error, error_message}, rest}
+              _ ->
+                {new_tree, rest}
+            end
           end
         end
 
@@ -243,7 +656,12 @@ defmodule Parser do
           {%AST{node_name: :division, left_node: new_tree, right_node: tree}, rest}
 
         else
-          {new_tree, rest}
+          case right do
+            {:error, error_message} ->
+              {{:error, error_message}, rest}
+            _ ->
+              {new_tree, rest}
+          end
         end
       end
 
@@ -270,7 +688,12 @@ defmodule Parser do
             {%AST{node_name: :division, left_node: new_tree, right_node: tree}, rest}
 
           else
-            {new_tree, rest}
+            case right do
+              {:error, error_message} ->
+                {{:error, error_message}, rest}
+              _ ->
+                {new_tree, rest}
+            end
           end
         end
 
