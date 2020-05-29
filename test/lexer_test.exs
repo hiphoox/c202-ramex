@@ -258,6 +258,118 @@ defmodule LexerTest do
     assert Lexer.scan_words(s_code) == expected_result
   end
 
+  test "and_tkn", state do
+    code = """
+      int main() {
+        return 2&&2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:and, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "or_tkn", state do
+    code = """
+      int main() {
+        return 2||2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:or, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "less_tkn", state do
+    code = """
+      int main() {
+        return 2<2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:less_than, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "less_equal_tkn", state do
+    code = """
+      int main() {
+        return 2<=2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:less_than_equal, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "greater_tkn", state do
+    code = """
+      int main() {
+        return 2>2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:greater_than, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "greater_equal_tkn", state do
+    code = """
+      int main() {
+        return 2>=2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:greater_than_equal, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "equal_tkn", state do
+    code = """
+      int main() {
+        return 2==2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:equal, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "not equal_tkn", state do
+    code = """
+      int main() {
+        return 2!=2;
+    }
+    """
+    expected_result=
+    List.insert_at(state[:tokens],7, {:not_equal, 2})
+    |> List.insert_at(8, {{:constant, 2}, 2})
+
+    s_code = Sanitizer.sanitize_source(code)
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
   # tests to fail
   test "wrong case", _state do
     code = """
@@ -280,6 +392,88 @@ defmodule LexerTest do
     """
 
     s_code = Sanitizer.sanitize_source(code)
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "token not valid at other line", _state do
+    code = """
+    int main() {
+      return
+      %2;
+    }
+    """
+
+    s_code = Sanitizer.sanitize_source(code)
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "wrong type", _state do
+    code = """
+    void main() {
+      return 2;
+    }
+    """
+
+    s_code = Sanitizer.sanitize_source(code)
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "misspelled main", _state do
+    code = """
+    int min() {
+      return 2;
+    }
+    """
+
+    s_code = Sanitizer.sanitize_source(code)
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+    #########unary tests###########
+  test "wrong case_unary test", _state do
+
+    s_code = [{"int", 1}, {"main", 1}, {"(", 1}, {")", 1}, {"{", 1}, {"RETURN", 2}, {"2", 2}, {";", 2}, {"}", 3}]
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "token not valid_unary test", _state do
+
+    s_code = [{"int", 1}, {"main", 1}, {"(", 1}, {")", 1}, {"{", 1}, {"return", 2}, {"$", 2}, {";", 2}, {"}", 3}]
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "token not valid at other line_unary test", _state do
+
+
+    s_code = [{"int", 1}, {"main", 1}, {"(", 1}, {")", 1}, {"{", 1}, {"RETURN", 2}, {"$", 3}, {";", 3}, {"}", 4}]
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "wrong type_unary test", _state do
+
+    s_code = [{"void", 1}, {"main", 1}, {"(", 1}, {")", 1}, {"{", 1}, {"return", 2}, {"2", 2}, {";", 2}, {"}", 3}]
+
+    expected_result = {:error}
+    assert Lexer.scan_words(s_code) == expected_result
+  end
+
+  test "misspelled main_unary test", _state do
+
+    s_code = [{"int", 1}, {"min", 1}, {"(", 1}, {")", 1}, {"{", 1}, {"return", 2}, {"2", 2}, {";", 2}, {"}", 3}]
 
     expected_result = {:error}
     assert Lexer.scan_words(s_code) == expected_result
