@@ -54,7 +54,7 @@ defmodule CodeGenerator do
     rest=List.to_string(restList2)
 
       """
-          movl    #{const}, %eax
+          movl    #{const}, %rax
 
       """ <>
       rest
@@ -78,12 +78,12 @@ defmodule CodeGenerator do
     if number=="0" do
       code_snippet <>
       """
-        movl $1, %eax
+        movl $1, %rax
       """
     else
       code_snippet <>
       """
-         not %eax
+         not %rax
       """
     end
 
@@ -96,18 +96,18 @@ defmodule CodeGenerator do
 
         code_snippet <>
         """
-           neg %eax
+           neg %rax
         """
       _ ->
         code_snippet <>
         """
-           push %eax
+           push %rax
         """ <> "    movl " <> code_snippet_right <>
-        ", %eax
+        ", %rax
     " <>
         """
-        pop %ecx
-            subl %ecx, %eax
+        pop %rcx
+            subl %rcx, %rax
         """
     end
   end
@@ -125,12 +125,12 @@ defmodule CodeGenerator do
     if number=="0" do
       code_snippet <>
       """
-        movl $1, %eax
+        movl $1, %rax
       """
     else
       code_snippet <>
       """
-        movl $0, %eax
+        movl $0, %rax
       """
     end
   end
@@ -138,54 +138,54 @@ defmodule CodeGenerator do
   def emit_code(:addition, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        addl %ecx, %eax
+    pop %rcx
+        addl %rcx, %rax
     """
   end
 
   def emit_code(:multiplication, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        imul %ecx, %eax
+    pop %rcx
+        imul %rcx, %rax
     """
   end
 
   def emit_code(:division, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
         cdq
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        idivl %ecx
+    pop %rcx
+        idivl %rcx
     """
   end
 
   def emit_code(:equal, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        cmpl %eax, %ecx
-        movl $0, %eax
+    pop %rcx
+        cmpl %rax, %rcx
+        movl $0, %rax
         sete %al
     """
   end
@@ -193,14 +193,14 @@ defmodule CodeGenerator do
   def emit_code(:not_equal, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        cmpl %eax, %ecx
-        movl $0, %eax
+    pop %rcx
+        cmpl %rax, %rcx
+        movl $0, %rax
         setne %al
     """
   end
@@ -208,14 +208,14 @@ defmodule CodeGenerator do
   def emit_code(:less_than, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        cmpl %eax, %ecx
-        movl $0, %eax
+    pop %rcx
+        cmpl %rax, %rcx
+        movl $0, %rax
         setl %al
     """
   end
@@ -223,14 +223,14 @@ defmodule CodeGenerator do
   def emit_code(:greater_than, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        cmpl %eax, %ecx
-        movl $0, %eax
+    pop %rcx
+        cmpl %rax, %rcx
+        movl $0, %rax
         setg %al
     """
   end
@@ -238,14 +238,14 @@ defmodule CodeGenerator do
   def emit_code(:less_than_equal, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        cmpl %eax, %ecx
-        movl $0, %eax
+    pop %rcx
+        cmpl %rax, %rcx
+        movl $0, %rax
         setle %al
     """
   end
@@ -253,14 +253,14 @@ defmodule CodeGenerator do
   def emit_code(:greater_than_equal, code_snippet, _, code_snippet_right, _) do
     code_snippet <>
     """
-       push %eax
+       push %rax
     """ <> "    movl " <> code_snippet_right <>
-    ", %eax
+    ", %rax
     " <>
     """
-    pop %ecx
-        cmpl %eax, %ecx
-        movl $0, %eax
+    pop %rcx
+        cmpl %rax, %rcx
+        movl $0, %rax
         setge %al
     """
   end
@@ -277,20 +277,20 @@ defmodule CodeGenerator do
 
     code_snippet <>
     """
-       cmpl $0, %eax
+       cmpl $0, %rax
     """ <> "    je _clause" <> to_string(Counter.click(pid))
     <>
     "
-    movl $1, %eax
+    movl $1, %rax
     jmp _end" <> to_string(Counter.get(pid))
     <> "
 _clause" <> to_string(Counter.get(pid)) <> ":
-" <> "    movl #{const} , %eax
+" <> "    movl #{const} , %rax
    "
           <> rest <>
     """
-    cmpl $0, %eax
-        movl $0, %eax
+    cmpl $0, %rax
+        movl $0, %rax
         setne %al
     """ <> "_end" <> to_string(Counter.get(pid)) <> ":
     "
@@ -308,20 +308,20 @@ _clause" <> to_string(Counter.get(pid)) <> ":
 
     code_snippet <>
     """
-       cmpl $0, %eax
+       cmpl $0, %rax
     """ <> "    jne _clause" <> to_string(Counter.click(pid))
     <>
     "
     jmp _end" <> to_string(Counter.get(pid))
     <> "
 _clause" <> to_string(Counter.get(pid)) <> ":
-" <> "    movl #{const} , %eax
+" <> "    movl #{const} , %rax
 "
      <> rest <>
 
     """
-       cmpl $0, %eax
-        movl $0, %eax
+       cmpl $0, %rax
+        movl $0, %rax
         setne %al
     """ <> "_end" <> to_string(Counter.get(pid)) <> ":
     "

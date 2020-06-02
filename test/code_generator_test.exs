@@ -8,7 +8,7 @@ defmodule CodeGeneratorTest do
         .p2align        4, 0x90
         .globl  _main         ## -- Begin function main
     _main:                    ## @main
-        movl    $2, %eax
+        movl    $2, %rax
 
          ret
     """}
@@ -45,7 +45,7 @@ defmodule CodeGeneratorTest do
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $0, %eax
+    movl    $0, %rax
 
      ret
 """
@@ -71,9 +71,9 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    neg %eax
+    neg %rax
     ret
 """
 
@@ -97,9 +97,9 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $0, %eax
+    movl    $0, %rax
 
-   movl $1, %eax
+   movl $1, %rax
     ret
 """
 
@@ -123,9 +123,9 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $5, %eax
+    movl    $5, %rax
 
-   movl $0, %eax
+   movl $0, %rax
     ret
 """
 
@@ -149,9 +149,9 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $0, %eax
+    movl    $0, %rax
 
-   movl $1, %eax
+   movl $1, %rax
     ret
 """
 
@@ -175,9 +175,9 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    not %eax
+    not %rax
     ret
 """
 
@@ -201,11 +201,11 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    neg %eax
-   neg %eax
-   neg %eax
+    neg %rax
+   neg %rax
+   neg %rax
     ret
 """
 
@@ -229,12 +229,12 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    addl %ecx, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    addl %rcx, %rax
     ret
 """
 
@@ -258,12 +258,12 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    subl %ecx, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    subl %rcx, %rax
     ret
 """
 
@@ -287,12 +287,12 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    imul %ecx, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    imul %rcx, %rax
     ret
 """
 
@@ -316,13 +316,13 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
+    push %rax
     cdq
-    movl $2 , %eax\r
-    pop %ecx
-    idivl %ecx
+    movl $2 , %rax\r
+    pop %rcx
+    idivl %rcx
     ret
 """
 
@@ -346,13 +346,13 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    cmpl %eax, %ecx
-    movl $0, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    cmpl %rax, %rcx
+    movl $0, %rax
     sete %al
     ret
 """
@@ -377,13 +377,13 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    cmpl %eax, %ecx
-    movl $0, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    cmpl %rax, %rcx
+    movl $0, %rax
     setne %al
     ret
 """
@@ -408,13 +408,13 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    cmpl %eax, %ecx
-    movl $0, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    cmpl %rax, %rcx
+    movl $0, %rax
     setl %al
     ret
 """
@@ -439,13 +439,13 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    cmpl %eax, %ecx
-    movl $0, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    cmpl %rax, %rcx
+    movl $0, %rax
     setle %al
     ret
 """
@@ -470,13 +470,13 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    cmpl %eax, %ecx
-    movl $0, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    cmpl %rax, %rcx
+    movl $0, %rax
     setg %al
     ret
 """
@@ -501,13 +501,13 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    cmpl %eax, %ecx
-    movl $0, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    cmpl %rax, %rcx
+    movl $0, %rax
     setge %al
     ret
 """
@@ -532,16 +532,16 @@ _main:                    ## @main
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $1, %eax
+    movl    $1, %rax
 
-    cmpl $0, %eax
+    cmpl $0, %rax
     je _clause1\r
-    movl $1, %eax\r
+    movl $1, %rax\r
     jmp _end1\r
 _clause1:\r
-    movl $0 , %eax\r
-    cmpl $0, %eax
-    movl $0, %eax
+    movl $0 , %rax\r
+    cmpl $0, %rax
+    movl $0, %rax
     setne %al
 _end1:\r
         ret
@@ -567,15 +567,15 @@ _end1:\r
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $1, %eax
+    movl    $1, %rax
 
-    cmpl $0, %eax
+    cmpl $0, %rax
     jne _clause1\r
     jmp _end1\r
 _clause1:\r
-    movl $0 , %eax\r
-    cmpl $0, %eax
-    movl $0, %eax
+    movl $0 , %rax\r
+    cmpl $0, %rax
+    movl $0, %rax
     setne %al
 _end1:\r
         ret
@@ -601,19 +601,19 @@ _end1:\r
     .p2align        4, 0x90
     .globl  _main         ## -- Begin function main
 _main:                    ## @main
-    movl    $2, %eax
+    movl    $2, %rax
 
-    push %eax
-    movl $2 , %eax\r
-    pop %ecx
-    addl %ecx, %eax
-   cmpl $0, %eax
+    push %rax
+    movl $2 , %rax\r
+    pop %rcx
+    addl %rcx, %rax
+   cmpl $0, %rax
     jne _clause1\r
     jmp _end1\r
 _clause1:\r
-    movl $2 , %eax\r
-    cmpl $0, %eax
-    movl $0, %eax
+    movl $2 , %rax\r
+    cmpl $0, %rax
+    movl $0, %rax
     setne %al
 _end1:\r
         ret
