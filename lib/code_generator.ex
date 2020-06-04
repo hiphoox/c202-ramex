@@ -54,7 +54,7 @@ defmodule CodeGenerator do
     rest=List.to_string(restList2)
 
       """
-          movl    #{const}, %rax
+          mov    #{const}, %rax
 
       """ <>
       rest
@@ -78,7 +78,7 @@ defmodule CodeGenerator do
     if number=="0" do
       code_snippet <>
       """
-        movl $1, %rax
+        mov $1, %rax
       """
     else
       code_snippet <>
@@ -99,15 +99,24 @@ defmodule CodeGenerator do
            neg %rax
         """
       _ ->
+        codetoList=String.split(code_snippet_right, " ")
+        codetoTuple=List.to_tuple(codetoList)
+        const=elem(codetoTuple, 0)
+
+        codeSpaces=String.split(code_snippet_right, "")
+        restList=elem(List.pop_at(codeSpaces, 1), 1)
+        restList2=elem(List.pop_at(restList, 1), 1)
+        rest=List.to_string(restList2)
+
         code_snippet <>
         """
            push %rax
-        """ <> "    movl " <> code_snippet_right <>
+        """ <> "    mov " <> const <>
         ", %rax
-    " <>
+    " <> rest <>
         """
         pop %rcx
-            subl %rcx, %rax
+            sub %rcx, %rax
         """
     end
   end
@@ -125,36 +134,54 @@ defmodule CodeGenerator do
     if number=="0" do
       code_snippet <>
       """
-        movl $1, %rax
+        mov $1, %rax
       """
     else
       code_snippet <>
       """
-        movl $0, %rax
+        mov $0, %rax
       """
     end
   end
 
   def emit_code(:addition, code_snippet, _, code_snippet_right, _) do
+    codetoList=String.split(code_snippet_right, " ")
+    codetoTuple=List.to_tuple(codetoList)
+    const=elem(codetoTuple, 0)
+
+    codeSpaces=String.split(code_snippet_right, "")
+    restList=elem(List.pop_at(codeSpaces, 1), 1)
+    restList2=elem(List.pop_at(restList, 1), 1)
+    rest=List.to_string(restList2)
+
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> const <>
     ", %rax
-    " <>
+    " <> rest <>
     """
     pop %rcx
-        addl %rcx, %rax
+        add %rcx, %rax
     """
   end
 
   def emit_code(:multiplication, code_snippet, _, code_snippet_right, _) do
+    codetoList=String.split(code_snippet_right, " ")
+    codetoTuple=List.to_tuple(codetoList)
+    const=elem(codetoTuple, 0)
+
+    codeSpaces=String.split(code_snippet_right, "")
+    restList=elem(List.pop_at(codeSpaces, 1), 1)
+    restList2=elem(List.pop_at(restList, 1), 1)
+    rest=List.to_string(restList2)
+
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> const <>
     ", %rax
-    " <>
+    " <> rest <>
     """
     pop %rcx
         imul %rcx, %rax
@@ -162,16 +189,25 @@ defmodule CodeGenerator do
   end
 
   def emit_code(:division, code_snippet, _, code_snippet_right, _) do
+    codetoList=String.split(code_snippet_right, " ")
+    codetoTuple=List.to_tuple(codetoList)
+    const=elem(codetoTuple, 0)
+
+    codeSpaces=String.split(code_snippet_right, "")
+    restList=elem(List.pop_at(codeSpaces, 1), 1)
+    restList2=elem(List.pop_at(restList, 1), 1)
+    rest=List.to_string(restList2)
+
     code_snippet <>
     """
        push %rax
         cdq
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> const <>
     ", %rax
-    " <>
+    " <> rest <>
     """
     pop %rcx
-        idivl %rcx
+        idiv %rcx
     """
   end
 
@@ -179,13 +215,13 @@ defmodule CodeGenerator do
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> code_snippet_right <>
     ", %rax
     " <>
     """
     pop %rcx
         cmpl %rax, %rcx
-        movl $0, %rax
+        mov $0, %rax
         sete %al
     """
   end
@@ -194,13 +230,13 @@ defmodule CodeGenerator do
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> code_snippet_right <>
     ", %rax
     " <>
     """
     pop %rcx
         cmpl %rax, %rcx
-        movl $0, %rax
+        mov $0, %rax
         setne %al
     """
   end
@@ -209,13 +245,13 @@ defmodule CodeGenerator do
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> code_snippet_right <>
     ", %rax
     " <>
     """
     pop %rcx
         cmpl %rax, %rcx
-        movl $0, %rax
+        mov $0, %rax
         setl %al
     """
   end
@@ -224,13 +260,13 @@ defmodule CodeGenerator do
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> code_snippet_right <>
     ", %rax
     " <>
     """
     pop %rcx
         cmpl %rax, %rcx
-        movl $0, %rax
+        mov $0, %rax
         setg %al
     """
   end
@@ -239,13 +275,13 @@ defmodule CodeGenerator do
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> code_snippet_right <>
     ", %rax
     " <>
     """
     pop %rcx
         cmpl %rax, %rcx
-        movl $0, %rax
+        mov $0, %rax
         setle %al
     """
   end
@@ -254,13 +290,13 @@ defmodule CodeGenerator do
     code_snippet <>
     """
        push %rax
-    """ <> "    movl " <> code_snippet_right <>
+    """ <> "    mov " <> code_snippet_right <>
     ", %rax
     " <>
     """
     pop %rcx
         cmpl %rax, %rcx
-        movl $0, %rax
+        mov $0, %rax
         setge %al
     """
   end
@@ -281,16 +317,16 @@ defmodule CodeGenerator do
     """ <> "    je _clause" <> to_string(Counter.click(pid))
     <>
     "
-    movl $1, %rax
+    mov $1, %rax
     jmp _end" <> to_string(Counter.get(pid))
     <> "
 _clause" <> to_string(Counter.get(pid)) <> ":
-" <> "    movl #{const} , %rax
+" <> "    mov #{const} , %rax
    "
           <> rest <>
     """
     cmpl $0, %rax
-        movl $0, %rax
+        mov $0, %rax
         setne %al
     """ <> "_end" <> to_string(Counter.get(pid)) <> ":
     "
@@ -315,13 +351,13 @@ _clause" <> to_string(Counter.get(pid)) <> ":
     jmp _end" <> to_string(Counter.get(pid))
     <> "
 _clause" <> to_string(Counter.get(pid)) <> ":
-" <> "    movl #{const} , %rax
+" <> "    mov #{const} , %rax
 "
      <> rest <>
 
     """
        cmpl $0, %rax
-        movl $0, %rax
+        mov $0, %rax
         setne %al
     """ <> "_end" <> to_string(Counter.get(pid)) <> ":
     "
