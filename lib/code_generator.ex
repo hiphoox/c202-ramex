@@ -207,7 +207,7 @@ defmodule CodeGenerator do
     " <> rest <>
     """
     pop %rcx
-        idiv %rcx
+        idivq %rcx
     """
   end
 
@@ -220,7 +220,7 @@ defmodule CodeGenerator do
     " <>
     """
     pop %rcx
-        cmpl %rax, %rcx
+        cmp %rax, %rcx
         mov $0, %rax
         sete %al
     """
@@ -235,7 +235,7 @@ defmodule CodeGenerator do
     " <>
     """
     pop %rcx
-        cmpl %rax, %rcx
+        cmp %rax, %rcx
         mov $0, %rax
         setne %al
     """
@@ -250,7 +250,7 @@ defmodule CodeGenerator do
     " <>
     """
     pop %rcx
-        cmpl %rax, %rcx
+        cmp %rax, %rcx
         mov $0, %rax
         setl %al
     """
@@ -265,7 +265,7 @@ defmodule CodeGenerator do
     " <>
     """
     pop %rcx
-        cmpl %rax, %rcx
+        cmp %rax, %rcx
         mov $0, %rax
         setg %al
     """
@@ -280,7 +280,7 @@ defmodule CodeGenerator do
     " <>
     """
     pop %rcx
-        cmpl %rax, %rcx
+        cmp %rax, %rcx
         mov $0, %rax
         setle %al
     """
@@ -295,7 +295,7 @@ defmodule CodeGenerator do
     " <>
     """
     pop %rcx
-        cmpl %rax, %rcx
+        cmp %rax, %rcx
         mov $0, %rax
         setge %al
     """
@@ -313,7 +313,7 @@ defmodule CodeGenerator do
 
     code_snippet <>
     """
-       cmpl $0, %rax
+       cmp $0, %rax
     """ <> "    je _clause" <> to_string(Counter.click(pid))
     <>
     "
@@ -325,7 +325,7 @@ _clause" <> to_string(Counter.get(pid)) <> ":
    "
           <> rest <>
     """
-    cmpl $0, %rax
+    cmp $0, %rax
         mov $0, %rax
         setne %al
     """ <> "_end" <> to_string(Counter.get(pid)) <> ":
@@ -344,7 +344,7 @@ _clause" <> to_string(Counter.get(pid)) <> ":
 
     code_snippet <>
     """
-       cmpl $0, %rax
+       cmp $0, %rax
     """ <> "    jne _clause" <> to_string(Counter.click(pid))
     <>
     "
@@ -356,7 +356,7 @@ _clause" <> to_string(Counter.get(pid)) <> ":
      <> rest <>
 
     """
-       cmpl $0, %rax
+       cmp $0, %rax
         mov $0, %rax
         setne %al
     """ <> "_end" <> to_string(Counter.get(pid)) <> ":
