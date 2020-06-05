@@ -321,7 +321,7 @@ _main:                    ## @main
     cdq
     mov $2, %rax\r
      pop %rcx
-    idiv %rcx
+    idivq %rcx
     ret
 """
 
