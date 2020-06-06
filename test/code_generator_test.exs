@@ -350,7 +350,7 @@ _main:                    ## @main
     push %rax
     mov $2 , %rax\r
     pop %rcx
-    cmpl %rax, %rcx
+    cmp %rax, %rcx
     mov $0, %rax
     sete %al
     ret
@@ -381,7 +381,7 @@ _main:                    ## @main
     push %rax
     mov $2 , %rax\r
     pop %rcx
-    cmpl %rax, %rcx
+    cmp %rax, %rcx
     mov $0, %rax
     setne %al
     ret
@@ -412,7 +412,7 @@ _main:                    ## @main
     push %rax
     mov $2 , %rax\r
     pop %rcx
-    cmpl %rax, %rcx
+    cmp %rax, %rcx
     mov $0, %rax
     setl %al
     ret
@@ -443,7 +443,7 @@ _main:                    ## @main
     push %rax
     mov $2 , %rax\r
     pop %rcx
-    cmpl %rax, %rcx
+    cmp %rax, %rcx
     mov $0, %rax
     setle %al
     ret
@@ -474,7 +474,7 @@ _main:                    ## @main
     push %rax
     mov $2 , %rax\r
     pop %rcx
-    cmpl %rax, %rcx
+    cmp %rax, %rcx
     mov $0, %rax
     setg %al
     ret
@@ -505,7 +505,7 @@ _main:                    ## @main
     push %rax
     mov $2 , %rax\r
     pop %rcx
-    cmpl %rax, %rcx
+    cmp %rax, %rcx
     mov $0, %rax
     setge %al
     ret
@@ -533,13 +533,13 @@ _main:                    ## @main
 _main:                    ## @main
     mov    $1, %rax
 
-    cmpl $0, %rax
+    cmp $0, %rax
     je _clause1\r
     mov $1, %rax\r
     jmp _end1\r
 _clause1:\r
     mov $0 , %rax\r
-    cmpl $0, %rax
+    cmp $0, %rax
     mov $0, %rax
     setne %al
 _end1:\r
@@ -568,12 +568,12 @@ _end1:\r
 _main:                    ## @main
     mov    $1, %rax
 
-    cmpl $0, %rax
+    cmp $0, %rax
     jne _clause1\r
     jmp _end1\r
 _clause1:\r
     mov $0 , %rax\r
-    cmpl $0, %rax
+    cmp $0, %rax
     mov $0, %rax
     setne %al
 _end1:\r
@@ -606,12 +606,12 @@ _main:                    ## @main
     mov $2, %rax\r
      pop %rcx
     add %rcx, %rax
-   cmpl $0, %rax
+   cmp $0, %rax
     jne _clause1\r
     jmp _end1\r
 _clause1:\r
     mov $2 , %rax\r
-    cmpl $0, %rax
+    cmp $0, %rax
     mov $0, %rax
     setne %al
 _end1:\r
