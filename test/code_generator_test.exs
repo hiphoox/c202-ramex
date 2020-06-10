@@ -6,8 +6,8 @@ defmodule CodeGeneratorTest do
     {:ok, assembly: """
         .section        #__TEXT,__text,regular,pure_instructions
         .p2align        4, 0x90
-        .globl  _main         ## -- Begin function main
-    _main:                    ## @main
+        .globl  main         ## -- Begin function main
+    main:                    ## @main
         mov    $2, %rax
 
          ret
@@ -43,8 +43,8 @@ defmodule CodeGeneratorTest do
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $0, %rax
 
      ret
@@ -68,8 +68,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     neg %rax
@@ -94,8 +94,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $0, %rax
 
    mov $1, %rax
@@ -120,8 +120,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $5, %rax
 
    mov $0, %rax
@@ -146,8 +146,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $0, %rax
 
    mov $1, %rax
@@ -172,8 +172,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     not %rax
@@ -198,8 +198,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     neg %rax
@@ -226,8 +226,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -255,8 +255,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -284,8 +284,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -313,8 +313,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -343,8 +343,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -374,8 +374,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -405,8 +405,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -436,8 +436,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -467,8 +467,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -498,8 +498,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -529,8 +529,8 @@ _main:                    ## @main
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $1, %rax
 
     cmp $0, %rax
@@ -564,8 +564,8 @@ _end1:\r
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $1, %rax
 
     cmp $0, %rax
@@ -598,8 +598,8 @@ _end1:\r
     expected_result="""
     .section        #__TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  _main         ## -- Begin function main
-_main:                    ## @main
+    .globl  main         ## -- Begin function main
+main:                    ## @main
     mov    $2, %rax
 
     push %rax

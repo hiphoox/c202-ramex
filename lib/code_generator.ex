@@ -33,8 +33,8 @@ defmodule CodeGenerator do
 
   def emit_code(:function, code_snippet, :main, _, _) do
     """
-        .globl  _main         ## -- Begin function main
-    _main:                    ## @main
+        .globl  main         ## -- Begin function main
+    main:                    ## @main
     """ <>
       code_snippet
       <>
