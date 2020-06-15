@@ -4,10 +4,10 @@ defmodule CodeGeneratorTest do
 
   setup_all do
     {:ok, assembly: """
-        .section        #__TEXT,__text,regular,pure_instructions
+        .section        __TEXT,__text,regular,pure_instructions
         .p2align        4, 0x90
-        .globl  main         ## -- Begin function main
-    main:                    ## @main
+        .globl  _main         ## -- Begin function main
+    _main:                    ## @main
         mov    $2, %rax
 
          ret
@@ -41,10 +41,10 @@ defmodule CodeGeneratorTest do
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $0, %rax
 
      ret
@@ -66,10 +66,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     neg %rax
@@ -92,10 +92,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $0, %rax
 
    mov $1, %rax
@@ -118,10 +118,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $5, %rax
 
    mov $0, %rax
@@ -144,10 +144,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $0, %rax
 
    mov $1, %rax
@@ -170,10 +170,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     not %rax
@@ -196,10 +196,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     neg %rax
@@ -224,10 +224,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -253,10 +253,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -282,10 +282,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -311,10 +311,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -341,10 +341,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -372,10 +372,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -403,10 +403,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -434,10 +434,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -465,10 +465,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -496,10 +496,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
@@ -527,10 +527,10 @@ main:                    ## @main
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $1, %rax
 
     cmp $0, %rax
@@ -562,10 +562,10 @@ _end1:\r
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $1, %rax
 
     cmp $0, %rax
@@ -596,10 +596,10 @@ _end1:\r
 
     _previous_result=state[:assembly]
     expected_result="""
-    .section        #__TEXT,__text,regular,pure_instructions
+    .section        __TEXT,__text,regular,pure_instructions
     .p2align        4, 0x90
-    .globl  main         ## -- Begin function main
-main:                    ## @main
+    .globl  _main         ## -- Begin function main
+_main:                    ## @main
     mov    $2, %rax
 
     push %rax
