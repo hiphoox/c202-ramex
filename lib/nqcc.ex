@@ -3,11 +3,11 @@ defmodule Nqcc do
   Documentation for Nqcc.
   """
   @commands %{
-    "\t-h\t" => "help\n\t\t\t\tSintaxis:\n\t\t\t\t\tWindows: escript nqcc -h",
-    "\t-c\t" => "Compiler the program\n\t\t\t\tSintaxis:\n\t\t\t\t\tWindows: escript nqcc -c 'Example Adress'",
-    "\t-a\t" => "Generate Assembler\n\t\t\t\tSintaxis:\n\t\t\t\t\tWindows: escript nqcc -a 'Example Adress'",
-    "\t-t\t" => "Generate AST tree\n\t\t\t\tSintaxis:\n\t\t\t\t\tWindows: escript nqcc -t 'Example Adress'",
-    "\t-l\t" => "Token List\n\t\t\t\tSintaxis:\n\t\t\t\t\tWindows: escript nqcc -l 'Example Adress'"
+    "\t-h\t" => "help\n\t\t\t\tSintaxis:\n\t\t\t\t\tescript nqcc -h",
+    "\t-c\t" => "Compiler the program\n\t\t\t\tSintaxis:\n\t\t\t\t\tescript nqcc -c 'Example Adress'",
+    "\t-a\t" => "Generate Assembler\n\t\t\t\tSintaxis:\n\t\t\t\t\tescript nqcc -a 'Example Adress'",
+    "\t-t\t" => "Generate AST tree\n\t\t\t\tSintaxis:\n\t\t\t\t\tescript nqcc -t 'Example Adress'",
+    "\t-l\t" => "Token List\n\t\t\t\tSintaxis:\n\t\t\t\t\tescript nqcc -l 'Example Adress'"
   }
 
   def main(args) do
